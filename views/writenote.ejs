@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>笔记管理页面</title>
+  <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="../static/public/editormd.min.js"></script>
+  <link rel="stylesheet" href="../static/public/editormd.min.css"/>
+</head>
+<style>
+  *{
+    margin: 0;
+    padding: 0;
+  }
+
+  #master{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #85AD92;
+  }
+  #master p{
+    font-size: 20px;
+  }
+  .notes{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #ccc;
+  }
+  .rightslide{
+    width: 15%;
+    height: 100%;
+    float: right;
+    background-color: #DEEBF7;
+  }
+  .notelist{
+    position: relative;
+    top: 100px;
+    width: 70%;
+    padding-left: 30px;
+    list-style: none;
+  }
+  .notelist li{
+    display: block;
+    margin-bottom: 15px;
+    line-height: 20px;
+    text-align: left;
+  }
+  .notelist a{
+    color: #000;
+  }
+  .label{
+    display: inline-block;
+    line-height: 30px;
+    margin: 5px 10px;
+  }
+  #title{
+    display: inline-block;
+    width: 800px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+  }
+  .btns{
+    display: inline-block;
+    width: 80px;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+  }
+  #return{
+    display: inline-block;
+    float: right;
+    margin-right: 5px;
+    width: 120px;
+  }
+  #return a{
+    color: white;
+    text-decoration: none;
+  }
+  @media only screen and   (max-width: 1001px) {
+    .rightslide{
+      display: none;
+    }
+  }
+</style>
+
+<body>
+  <div id="master">
+
+    <div class="notes">
+      <p>编辑我的个人笔记</p>
+
+      <!-- <form method="post"  id="form"> -->
+        <label><span class="label">文章标题</span><input type="text" name="title" id="title"/></label>
+        <div id="test-editormd">
+          <textarea id="content" name="content" style="display:none;">### Hello Editor.md !</textarea>
+        </div>
+        <input type="hidden" name="typeid" value="11"/>
+        <input type="hidden" name="typename" value="For_test"/>
+        <input type="submit" value="submit" class="btns" id="submit"/>
+        <button class="btns" id="return">return to index</button>
+      <!-- </form> -->
+
+    </div>
+
+
+  </div>
+</body>
+
+<script>
+  var winWidth=0 , winHeight=0;
+  getwidth();
+  function getwidth(){
+    if (window.innerWidth){
+      winWidth = window.innerWidth;
+    }
+    else if ((document.body) && (document.body.clientWidth))
+      winWidth = document.body.clientWidth;
+    // 获取窗口高度
+    if (window.innerHeight)
+      winHeight = window.innerHeight;
+    else if ((document.body) && (document.body.clientHeight))
+      winHeight = document.body.clientHeight;
+    // 通过深入 Document 内部对 body 进行检测，获取窗口大小
+  }
+  var browser = {
+    width: winWidth,
+    height: winHeight
+  }
+  var iniframe = (browser.width<1001);
+  var testEditor;
+  $(function() {
+    testEditor = editormd("test-editormd", {
+      width   : iniframe?1000:1300,
+      height  : iniframe?520:600,
+      syncScrolling : "single",
+      path    : "../static/public/lib/"
+    });
+  });
+
+  var $submit = $("#submit");
+  
+  
+  $submit.click(function(){
+    var textarea = $("#content").val();
+    var titleval = $("#title").val();
+    var url = "http://"+window.location.hostname+":3123/note/save"
+                var resp = "";
+                $.ajax({
+                    type: "post",
+                    async: false,
+                    url: url,
+                    data:{
+                        title:titleval,
+                        content:textarea,
+                        typeid:11,
+                        typename:"For_test"
+                    },
+                    dataType: "jsonp",
+                    jsonp: "callback",
+                    success: function(json){
+                        var resp = json;
+          
+                        if(resp.notestatus){
+                            alert("保存笔记成功");
+                            window.parent.location.href = document.referrer;
+                        }else{
+                            alert("保存笔记错误,错误原因:"+resp.err);
+                            window.parent.location.href = document.referrer;
+                        }
+                    },
+                    error: function(){
+                        console.log('send addnote ajax failed');
+                    }
+                });
+  })
+
+  
+  var $return = $("#return");
+  $return.click(function(){
+    window.parent.location.href ="http://"+window.location.hostname+":3123/";
+  })
+
+  
+</script>
+</html>
