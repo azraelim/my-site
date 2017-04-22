@@ -34,10 +34,6 @@
                                 <input type="submit" value="注册" class="btn btn-primary" placeholder="注册" @click="regcheck()"/>
                         </div>
                     </div>
-
-                    <!--<div class="modal-footer">
-                        <button type="button" class="btn btn-primary"  data-dismiss="modal" aria-label="Close">随便看看(匿名登录)</button>
-                    </div>-->
             </div>
         </div>
     </div>
@@ -53,7 +49,6 @@
         }
         },
         mounted(){
-
             this.inputcheck();
         },
         methods:{
@@ -62,7 +57,7 @@
                 var inputs = $(".reginput");
                 $.ajax({
                     type: "post",
-                    async: false,
+                    async: true,
                     data:{
                         nickname:inputs[0].value.toString(),
                         pwd:inputs[1].value.toString(),

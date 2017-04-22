@@ -7,7 +7,7 @@ var async = require("async");
 
 module.exports={
     register:function(req,res){
-        pool = connPool();
+        var pool = connPool();
         //从pool中获取连接(异步,取到后回调)
         pool.getConnection(function(err,conn){
             if(err){
@@ -22,19 +22,15 @@ module.exports={
                     regstatus:0
                 };
                 if(err){
-                    errStr = err.message;
-
+                    var errStr = err.message;
                     if(errStr.indexOf('emailuniq')>-1){
-
                         sends.regstatus = 2;
                     }else if(errStr.indexOf('nicknameuiq')>-1){
-
                         sends.regstatus = 3;
                     }else{
                         //sendStr += "数据库异常，请稍后再试";
                         sends.regstatus = 4;
                     }
-
                     res.json(sends);
 
                     return;
@@ -48,7 +44,7 @@ module.exports={
     },
     login:function(req,res){
         //console.log(req.headers);
-        pool = connPool();
+        var pool = connPool();
         //从pool中获取连接(异步,取到后回调)
         pool.getConnection(function(err,conn)
         {
@@ -70,14 +66,14 @@ module.exports={
                 var sends;
                 //console.log(rs.length);
                 if(rs.length>0){
-                    loginbean = new loginBean();
+                    var loginbean = new loginBean();
                     loginbean.id=rs[0].uid;
                     loginbean.nickname = rs[0].nickname;
                     req.session.loginbean = loginbean;
 
                     console.log("--loginbean:"+loginbean);
                     console.log("--session:"+req.session.loginbean);
-                    targeturl = req.body['targeturl'];
+                    var targeturl = req.body['targeturl'];
 
                     console.log("登录成功");
 
@@ -87,23 +83,13 @@ module.exports={
                         req.connection.socket.remoteAddress;
 
                     console.log(ip)
-                    //res.send('<script>alert("登录成功");window.location.href = document.referrer;</script>');
                     sends = {
-                        loginSuccess:true,
-                        script:'<script>alert("登录成功");</script>'
+                        loginSuccess:true
                     }
                     res.json(sends)
                 }else{
-                    //跨域处理
-                    /*res.header('Access-Control-Allow-Origin','*')
-                    res.header('Access-Control-Allow-Methods','POST')
-                    res.header('Access-Control-Allow-Headers','x-requested-with')*/
-
-                    //res.send("用户名或密码错误");
-                    //res.send('<script>alert("用户名或密码错误")</script>');
                     sends = {
-                        loginSuccess:false,
-                        script:'<script>alert("用户名或密码错误");</script>'
+                        loginSuccess:false
                     }
                     res.json(sends)
                 }
@@ -114,7 +100,7 @@ module.exports={
     //匿名登录
     anonymous:function(req,res){
         //console.log(req.headers);
-        pool = connPool();
+        var pool = connPool();
         //从pool中获取连接(异步,取到后回调)
         pool.getConnection(function(err,conn){
             if(err){
@@ -133,7 +119,7 @@ module.exports={
             var userAddSql = 'insert into user (email,pwd,nickname,createtime) values(?,?,?,current_timestamp)';
             var param = [ip+randomnum.toString(),"anonymous","匿名用户"+ip+randomnum.toString()];
             var userSql = 'select uid,nickname from user where nickname=? and pwd=?';
-            var param2 = ["匿名用户"+ip,"anonymous"];
+            var param2 = ["匿名用户"+ip+randomnum.toString(),"anonymous"];
 
             async.series({
                 one: function (callback) {
@@ -162,14 +148,14 @@ module.exports={
                 var sends;
                 //console.log(rs.length);
                 if(rs.length>0){
-                    loginbean = new loginBean();
+                    var loginbean = new loginBean();
                     loginbean.id=rs[0].uid;
                     loginbean.nickname = rs[0].nickname;
                     req.session.loginbean = loginbean;
 
                     console.log("--loginbean:"+loginbean);
                     console.log("--session:"+req.session.loginbean);
-                    targeturl = req.body['targeturl'];
+                    var targeturl = req.body['targeturl'];
 
                     console.log("登录成功");
 
@@ -189,6 +175,56 @@ module.exports={
             conn.release();
         });
 
-    }
+    },
+    counter:function(req,res){
+        var pool = connPool();
+        //从pool中获取连接(异步,取到后回调)
+        pool.getConnection(function(err,conn){
+            if(err){
+                //console.log('insert err:',err.message);
+                res.send("获取链接错误,错误原因:"+err.message);
+                return;
+            }
+
+            var ip = req.headers['x-forwarded-for'] ||
+                req.connection.remoteAddress ||
+                req.socket.remoteAddress ||
+                req.connection.socket.remoteAddress;
+
+            var siteinfo = 'insert into siteinfo (ip,userinfo,createtime) values(?,?,current_timestamp)';
+            var param = [ip,"from index"];
+            var getnum = 'select count(*) as num from siteinfo';
+            async.series({
+                one: function (callback) {
+                    conn.query(siteinfo,param,function(err,rs){
+                        if(err){
+                            console.log('insert into siteinfo err:',err.message);
+                            return;
+                        }
+                        callback(null, rs);
+                    })
+                },
+                two: function (callback) {
+                    conn.query(getnum,[],function(err,rs){
+                        if(err){
+                            console.log('select siteinfo err:',err.message);
+                            return;
+                        }
+                        callback(null, rs);
+                    })
+                }
+            }, function (err, results) {
+
+                var rs = results['two'];
+                console.log(rs);
+                var sends= {
+                    checked:true,
+                    result:rs
+                };
+                res.json(sends)
+            });
+            conn.release();//放回链接池
+        });
+    },
 };
 

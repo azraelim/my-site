@@ -8,7 +8,7 @@ var MessageModel = require('../models/MessageModel');
 
 
 router.all('/add', function(req, res) {
-    subflag = req.body['subflag'];
+    var subflag = req.body['subflag'];
     if(subflag!=undefined){
         MessageModel.addMessage(req,res);
     }

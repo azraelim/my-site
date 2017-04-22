@@ -14,39 +14,39 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li @click="getnote()">
-                        <router-link :to="{ path:'/notes',query:{page:pre}}">
+                        <router-link :to="{ path:'/notes',query:{page:pre,typeid:typeid}}">
                             <a href="" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </router-link>
                     </li>
                     <li @click="getnote()">
-                        <router-link :to="{ path:'/notes',query:{page:showpage}}">
+                        <router-link :to="{ path:'/notes',query:{page:showpage,typeid:typeid}}">
                         {{showpage}}
                         </router-link>
                     </li>
                     <li @click="getnote()">
-                        <router-link :to="{ path:'/notes',query:{page:showpage+1}}">
+                        <router-link :to="{ path:'/notes',query:{page:showpage+1,typeid:typeid}}">
                         {{showpage+1}}
                         </router-link>
                     </li>
                     <li @click="getnote()">
-                        <router-link :to="{ path:'/notes',query:{page:showpage+2}}">
+                        <router-link :to="{ path:'/notes',query:{page:showpage+2,typeid:typeid}}">
                         {{showpage+2}}
                         </router-link>
                     </li>
                     <li @click="getnote()">
-                        <router-link :to="{ path:'/notes',query:{page:showpage+3}}">
+                        <router-link :to="{ path:'/notes',query:{page:showpage+3,typeid:typeid}}">
                         {{showpage+3}}
                         </router-link>
                     </li>
                     <li @click="getnote()">
-                        <router-link :to="{ path:'/notes',query:{page:showpage+4}}">
+                        <router-link :to="{ path:'/notes',query:{page:showpage+4,typeid:typeid}}">
                         {{showpage+4}}
                         </router-link>
                     </li>
                     <li @click="getnote()">
-                        <router-link :to="{ path:'/notes',query:{page:next}}">
+                        <router-link :to="{ path:'/notes',query:{page:next,typeid:typeid}}">
                             <a href="" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
@@ -59,10 +59,7 @@
 </template>
 
 <script>
-
-
     var items=[];
-
     var self;
     export default {
 
@@ -79,20 +76,21 @@
                 next:"",
                 count:"",
                 countPage:"",
-                showpage:""
+                showpage:"",
+                typeid:""
             }
         },
         mounted()
         {
             self = this;
             this.getnote();
-
         },
         methods:{
 
             getnote:function(){
                 var page = self.$route.query.page;
                 var type = self.$route.query.typeid;
+                self.typeid = self.$route.query.typeid;
                 if(!page){
                     page = 1
                 }
@@ -102,7 +100,7 @@
                 var url = "http://"+window.location.hostname+":3123/note?page="+page+"&typeid="+type;
                 $.ajax({
                     type: "get",
-                    async: false,
+                    async: true,
                     url: url,
                     dataType: "jsonp",
                     jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)

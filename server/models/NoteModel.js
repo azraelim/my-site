@@ -11,8 +11,8 @@ var marked = require('marked');
 
 module.exports={
     noteSave:function(req,res){
-        loginbean = req.session.loginbean;
-        pool = connPool();
+        var loginbean = req.session.loginbean;
+        var pool = connPool();
         //从pool中获取连接(异步,取到后回调)
         pool.getConnection(function(err,conn){
             var userAddSql = 'insert into note (typeid,typename,title,content,uid,nickname,createtime) values(?,?,?,?,?,?,current_timestamp)';
@@ -43,7 +43,7 @@ module.exports={
         });
     },
     noteList:function(req,res,loginbean) {
-        pool = connPool();
+        var pool = connPool();
         //从pool中获取连接(异步,取到后回调)
         pool.getConnection(function (err, conn) {
             if (err) {
@@ -51,7 +51,7 @@ module.exports={
                 res.send("获取连接错误,错误原因:" + err.message);
                 return;
             }
-            page = 1;
+            var page = 1;
             if (req.query['page'] != undefined) {
                 page = parseInt(req.query['page']);
                 if (page < 1) {
@@ -59,7 +59,7 @@ module.exports={
                 }
             }
             //每页显示的问题数量
-            pageSize = 4;
+            var pageSize = 4;
             if (req.query['pageSize'] != undefined) {
                 pageSize = parseInt(req.query['pageSize']);
             }
@@ -71,9 +71,9 @@ module.exports={
             }
 
             //每页开始的问题编号
-            pointStart = (page - 1) * pageSize;
-            count = 0;
-            countPage = 0;
+            var pointStart = (page - 1) * pageSize;
+            var count = 0;
+            var countPage = 0;
             var countSql = "select count(*) as count from note where typeid=?";
             var type = [typeid]
             var listSql = "select noteid,title,content,looknum,renum,finished,updtime,createtime from note where typeid=? order by noteid desc limit ?,?";
@@ -108,7 +108,7 @@ module.exports={
             }, function (err, results) {
                 //console.log(results);
 
-                rs = results['two'];
+                var rs = results['two'];
 
                 //page默认为1，可由前端传入
                 //rs为结果集，包含第page个页面的文章信息
@@ -122,15 +122,15 @@ module.exports={
         });
     },
     noteDetail:function(req,res){
-        noteid = req.query['noteid'];
+        var noteid = req.query['noteid'];
         console.log("--noteid:"+noteid)
-        loginbean = req.session.loginbean;
+        var loginbean = req.session.loginbean;
         if(noteid!=undefined){
-            sqlupd = 'update note set looknum=looknum+1 where noteid=?';
-            sqldetail = "select noteid,title,content,uid,nickname,looknum,renum,finished,updtime,date_format(createtime,'%Y-%c-%d %T') as createtime from note where noteid=?";
-            sqlReplys="select replyid,content,uid,nickname,date_format(createtime,'%Y-%c-%d') as createtime from reply where noteid=?";
-            param=[noteid];
-            pool = connPool();
+            var sqlupd = 'update note set looknum=looknum+1 where noteid=?';
+            var sqldetail = "select noteid,title,content,uid,nickname,looknum,renum,finished,updtime,date_format(createtime,'%Y-%c-%d %T') as createtime from note where noteid=?";
+            var sqlReplys="select replyid,content,uid,nickname,date_format(createtime,'%Y-%c-%d') as createtime from reply where noteid=?";
+            var param=[noteid];
+            var pool = connPool();
             //从pool中获取连接(异步,取到后回调)
             pool.getConnection(function(err,conn)
             {
@@ -157,8 +157,8 @@ module.exports={
                         })
                     }
                 },function(err, results) {
-                    rs=results['two'];
-                    rsReply = results['three'];
+                    var rs=results['two'];
+                    var rsReply = results['three'];
                     var result ={loginbean:loginbean,rs:rs,rsReply:rsReply}
                     res.jsonp(result);
                 });
@@ -179,12 +179,12 @@ module.exports={
             return;
         }
 
-        loginbean = req.session.loginbean;
-        pool = connPool();
-        sqlreply = 'insert into reply (noteid,content,uid,nickname) value(?,?,?,?)';
-        param1=[req.body['noteid'],req.body['content'],loginbean.id,loginbean.nickname];
-        sqlquestion='update note set renum=renum+1 where noteid=?';
-        param2=[req.body['noteid']];
+        var loginbean = req.session.loginbean;
+        var pool = connPool();
+        var sqlreply = 'insert into reply (noteid,content,uid,nickname) value(?,?,?,?)';
+        var param1=[req.body['noteid'],req.body['content'],loginbean.id,loginbean.nickname];
+        var sqlquestion='update note set renum=renum+1 where noteid=?';
+        var param2=[req.body['noteid']];
         //从pool中获取连接(异步,取到后回调)
         pool.getConnection(function(err,conn){
             if (err) {

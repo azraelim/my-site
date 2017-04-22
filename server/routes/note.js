@@ -11,7 +11,7 @@ var NoteModel = require('../models/NoteModel');
 
 
 router.all('/save', function(req, res) {
-    loginbean = checkSession.check(req,res);
+    var loginbean = checkSession.check(req,res);
     if(!loginbean){
         res.send('<script>alert("请登录");window.location.href="http://"+window.location.hostname+":3123";</script>');
         return;
@@ -25,9 +25,9 @@ router.get('/detail', function(req, res) {
 })
 
 router.post('/reply', function(req, res) {
-    loginbean = checkSession.check(req,res);
+    var loginbean = checkSession.check(req,res);
     if(!loginbean){return;}
-    subflag = req.body['subflag'];
+    var subflag = req.body['subflag'];
     if(subflag!=undefined){
         NoteModel.noteReply(req,res);
     }

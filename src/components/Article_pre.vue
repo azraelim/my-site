@@ -21,7 +21,6 @@
 
 <script>
     export default {
-        /*props: ['title', 'content','looknum','renum'],*/
         props:['item'],
         data ()
         {
@@ -34,12 +33,6 @@
         methods:{
 
         },
-        watch: {
-            '$route': function(newVal, oldVal) {
-                //console.log(this.item.noteid)
-
-            }
-        }
     }
 
 </script>

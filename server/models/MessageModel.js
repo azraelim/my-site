@@ -13,8 +13,8 @@ var async = require("async");
 
 module.exports={
     addMessage:function(req,res){
-        loginbean = req.session.loginbean;
-        pool = connPool();
+        var loginbean = req.session.loginbean;
+        var pool = connPool();
         //从pool中获取连接(异步,取到后回调)
         pool.getConnection(function(err,conn){
             var userAddSql = 'insert into message (content,nickname,createtime) values(?,?,current_timestamp)';
@@ -42,7 +42,7 @@ module.exports={
         });
     },
     MessageList:function(req,res,loginbean) {
-        pool = connPool();
+        var pool = connPool();
         //从pool中获取连接(异步,取到后回调)
         pool.getConnection(function (err, conn) {
             if (err) {
@@ -58,15 +58,15 @@ module.exports={
                 }
             }
             //每页显示的问题数量
-            pageSize = 10;
+            var pageSize = 10;
             if (req.query['pageSize'] != undefined) {
                 pageSize = parseInt(req.query['pageSize']);
             }
 
             //每页开始的问题编号
-            pointStart = (page - 1) * pageSize;
-            count = 0;
-            countPage = 0;
+            var pointStart = (page - 1) * pageSize;
+            var count = 0;
+            var countPage = 0;
             var countSql = 'select count(*) as count from message';
             var listSql = "select messageid,content,date_format(createtime,'%Y-%c-%d %T') as createtime,nickname from message order by messageid desc limit ?,?";
             var param = [pointStart, pageSize];

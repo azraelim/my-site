@@ -3,9 +3,9 @@
         <div class="warning">
             <p>您当前设备的屏幕分辨率过小 ，无法使用笔记编辑器</p>
         </div>
-        <div class="rslide">
-            <rightslide></rightslide>
-        </div>
+
+
+        <rightslide v-if="right"></rightslide>
 
 
         <div class="notes" v-if="typeid == 10">
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+    import browser from '../js/getbrowser'
+
     export default {
 
         data ()
@@ -27,15 +29,19 @@
             return {
                 typeid:"",
                 url1:"",
-                url2:""
+                url2:"",
+                right:false
             }
         },
         mounted()
         {
-            //var type = self.$route.params.typeid;
             this.typeid = this.$route.params.typeid;
             this.url1 = "http://"+window.location.hostname+":3123/master";
             this.url2 = "http://"+window.location.hostname+":3123/writenote";
+
+            if(browser.width>1400){
+                this.right = true;
+            }
         }
 
     }
@@ -96,11 +102,6 @@
     }
     .warning{
         display: none;
-    }
-    @media only screen and (min-width:1000px) and  (max-width:1200px) {
-        .rslide{
-            display: none;
-        }
     }
     @media only screen and   (max-width:1000px) {
         .warning{

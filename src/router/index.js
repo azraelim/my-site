@@ -24,7 +24,6 @@ export default new Router({
         },
         {
             path: '/notes',
-
             component: Notes,
             children:[
                 {

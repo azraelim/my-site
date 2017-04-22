@@ -25,8 +25,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary"  data-dismiss="modal" aria-label="Close" @click="logincheck(true)">随便看看(匿名登录)</button>
                 </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
+            </div>
+        </div>
     </div>
 </template>
 
@@ -50,7 +50,7 @@
                 var url = "http://"+window.location.hostname+":3123/users/login";
                 $.ajax({
                     type: "post",
-                    async: false,
+                    async: true,
                     data:{
                         nickname:username.value.toString(),
                         pwd:password.value.toString(),
@@ -61,16 +61,13 @@
                     xhrFields:{withCredentials:true},
                     url: url,
                     dataType: "json",
-                    jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
                     success: function(json){
-                        var resp = json;
 
-                        if(resp.loginSuccess){
+                        if(json.loginSuccess){
 
                             alert("登录成功");
                             window.location.href = "http://"+window.location.hostname+":3123";
                         }else{
-                            //console.log(resp.script)
                             alert("用户名或密码错误");
                         }
                     },

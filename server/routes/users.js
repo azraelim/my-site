@@ -9,14 +9,9 @@ var connPools = require('../models/ConnPools');
     res.send('respond with a resource');
 });*/
 
-router.get('/list_user', function (req, res) {
-    console.log("list_user GET 请求");
-    res.send('用户列表页面');
-});
-
 router.all('/login', function(req, res) {
     //userModels.login(req,res);
-    subflag = req.body['subflag'];
+    var subflag = req.body['subflag'];
     if(subflag==undefined){
         res.render('error');
     }else{
@@ -29,7 +24,7 @@ router.all('/login', function(req, res) {
 });
 
 router.post('/register', function(req, res) {
-    nickname = req.body['nickname'];
+    var nickname = req.body['nickname'];
     console.log("post:"+ nickname);
     userModels.register(req,res);
 });

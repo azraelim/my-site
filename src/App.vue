@@ -65,7 +65,6 @@
 
         },
         mounted(){
-            //loginbean = getsession();
             this.checksession();
         },
         methods: {
@@ -77,7 +76,7 @@
                     async: false,
                     url: url,
                     dataType: "jsonp",
-                    jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+                    jsonp: "callback",
                     success: function(json){
                         self.islogged = checklogged(json.loginbean);
                         if(self.islogged){

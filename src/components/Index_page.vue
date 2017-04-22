@@ -85,7 +85,7 @@
 
 
         <div class="footer">
-            <span>欢迎来到小站，您当前正在使用{{category}}浏览器，浏览器窗口实际宽度为{{width}}px，高度为{{height}}px，dpr(设备像素比)为{{dpr.toFixed(2)}}</span>
+            <span>欢迎来到小站，您是第{{num}}位访客，当前正在使用{{category}}浏览器，浏览器窗口实际宽度为{{width}}px，高度为{{height}}px，dpr(设备像素比)为{{dpr.toFixed(2)}}</span>
         </div>
 
     </div>
@@ -106,11 +106,13 @@
                 dpr:browser.dpr,
                 aboutme:true,
                 aboutsite:false,
+                num:""
             }
         },
         mounted(){
-            self = this;
 
+            self = this;
+            this.counter();
             var $waves = $(".wave");
             $waves.each(function(index,ele) {
                 $(ele).mouseenter(function(){
@@ -136,6 +138,22 @@
                 self.aboutme = false;
                 self.aboutsite = true;
             },
+            counter:function(){
+                var url = "http://"+window.location.hostname+":3123/counter";
+                $.ajax({
+                    type: "get",
+                    async: true,
+                    xhrFields:{withCredentials:true},
+                    url: url,
+                    dataType: "json",
+                    success: function(json){
+                        self.num = json.result[0].num;
+                    },
+                    error: function(){
+                        console.log('logincheck ajax send failed!');
+                    }
+                });
+            }
         }
     }
 

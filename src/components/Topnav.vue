@@ -124,18 +124,29 @@
     ,
     mounted()
     {
+        this.access();
         changeNavColor();
     }
     ,
     methods:{
         logout:function () {
-            var xhr = new XMLHttpRequest();
             var url = "http://"+window.location.hostname+":3123/logout";
-            xhr.open("get", url, false);
-            xhr.send();
-            document.write(xhr.response);
+            $.ajax({
+                type: "get",
+                async: true,
+                xhrFields:{withCredentials:true},
+                url: url,
+                dataType: "json",
+                success: function(json){
+                    alert('注销成功');
+                    window.location.href = 'http://'+window.location.hostname+':3123';
+                },
+                error: function(){
+                    console.log('logincheck ajax send failed!');
+                }
+            });
         },
-        active:function () {
+        access:function () {
 
         }
     }
