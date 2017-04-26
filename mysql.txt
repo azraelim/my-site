@@ -1,0 +1,71 @@
+/*留言表*/
+create table note(
+noteid bigint not null primary key auto_increment,
+typeid int not null,        /*问题分类*/
+typename varchar(120) not null,  /*分类名称*/
+title varchar(240) not null,    /*问题标题*/
+content text not null,    /*问题内容*/
+uid bigint not null,        /*提问者id*/
+nickname varchar(120) not null, /*提问者昵称*/
+looknum bigint not null default 0,/*查看次数*/
+renum int not null default 0,    /*回复次数*/
+finished tinyint not null default 0,/*是否结贴,0表未结贴,1表结贴*/
+updtime timestamp not null,
+createtime timestamp not null
+)ENGINE=innodb DEFAULT CHARSET=utf8;
+
+/*评论表*/
+create table comment(
+commentid bigint not null primary key auto_increment,
+typeid int not null,        /*问题分类*/
+typename varchar(120) not null,  /*分类名称*/
+title varchar(240) not null,    /*问题标题*/
+content text not null,    /*问题内容*/
+uid bigint not null,        /*提问者id*/
+nickname varchar(120) not null, /*提问者昵称*/
+looknum bigint not null default 0,/*查看次数*/
+renum int not null default 0,    /*回复次数*/
+finished tinyint not null default 0,/*是否结贴,0表未结贴,1表结贴*/
+updtime timestamp not null,
+createtime timestamp not null
+)ENGINE=innodb DEFAULT CHARSET=utf8;
+
+/*回复表reply*/
+create table reply(
+replyid bigint not null primary key auto_increment,
+noteid bigint not null,
+content text not null,
+uid bigint not null,        /*提问者id*/
+nickname varchar(120) not null, /*提问者昵称*/
+createtime timestamp not null
+)ENGINE=innodb DEFAULT CHARSET=utf8;
+
+/*留言表message*/
+create table message(
+messageid bigint not null primary key auto_increment,
+content text not null,
+nickname varchar(120) not null, /*留言者昵称*/
+createtime timestamp not null
+)ENGINE=innodb DEFAULT CHARSET=utf8;
+
+
+create table user( 
+uid int not null primary key auto_increment, 
+email varchar(60) not null, 
+pwd varchar(60) not null, 
+nickname varchar(120) not null, 
+updtime timestamp not null, 
+createtime timestamp not null, 
+unique key emailuniq (email), 
+unique key nicknameuiq (nickname) 
+)ENGINE=myisam DEFAULT CHARSET=utf8; 
+
+
+//网站相关信息
+create table siteinfo( 
+uid int not null primary key auto_increment, 
+ip varchar(60) not null, 
+userinfo varchar(120), 
+createtime timestamp not null
+)ENGINE=myisam DEFAULT CHARSET=utf8; 
+

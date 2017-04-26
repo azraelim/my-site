@@ -7,7 +7,7 @@ module.exports = (function(){
         host: 'localhost',       //主机
         user: 'root',               //MySQL认证用户名
         password: '123456',        //MySQL认证用户密码
-        database: 'onsun',
+        database: 'onsun',		//数据库名称
         port: '3306'                   //端口号
     });
     pool.on('connection', function(connection) {

@@ -30,15 +30,17 @@
 
 `npm install`
 
-
 在3222端口启动开发环境
 
 `npm run dev`
 
-在33123端口启动后端服务
+在3123端口启动后端服务
 
 `npm start`
 
 打包前端文件，打包后会生成一个dist文件夹用于存放静态资源，入口文件index.ejs生成于views文件夹下
 
 `npm run build`
+
+
+数据库请自行建立，并在server\models\ConnPools.js中修改相应信息，使用的table可以参考mysql.txt
